@@ -1,0 +1,139 @@
+<!-- Styles -->
+
+<style>
+  :root {
+    /* Colors */
+    --color-local-black: #333333;
+    /* Font Sizes */
+    --font-size-4m: 11.2px;
+    /* Spacings */
+    --space-unit: 2px;
+    --space-3m: calc(3 * var(--space-unit));
+    --space-4m: calc(4 * var(--space-unit));
+    --space-5m: calc(5 * var(--space-unit));
+    --space-7m: calc(7 * var(--space-unit));
+  }
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: var(--font-size-4m);
+    line-height: var(--space-7m);
+  }
+  .themes-list {
+    margin: 0;
+    padding: var(--space-5m) 0;
+  }
+  .theme-option {
+    margin: 0 var(--space-4m); 
+    padding: var(--space-3m) var(--space-4m);
+    list-style: none;
+  }
+  .theme-option-label {
+    margin-left: var(--space-3m);
+  }
+</style>
+
+
+<!-- HTML -->
+
+<ul class="themes-list"></ul>
+
+
+<!-- JavaScript -->
+
+<script>
+
+// Helpers
+
+
+function markupListItem({ themeName, cssId }) {
+  return `<li class="theme-option">
+    <input type="radio" id="${cssId}" data-theme-name="${themeName}">
+    <label class="theme-option-label" for="${cssId}">${themeName}</label>
+  </li>`;
+}
+
+
+function optionsDeselectAll() {
+  const elementsRadioButtons = document.querySelectorAll('input[type="radio"]');
+  elementsRadioButtons.forEach(elementRadioButton => elementRadioButton.checked = false);
+}
+
+
+function handleThemeClick(event) {
+  optionsDeselectAll();
+  event.target.checked = true;
+
+  const themeName = event.target.dataset.themeName;
+  parent.postMessage({
+    pluginMessage: {
+      type: 'switch-theme-for-selected-layout',
+      themeName
+    }
+  }, '*');
+}
+
+
+
+// Main
+
+
+const domNamesList = document.querySelector('.themes-list');
+domNamesList.addEventListener('change', handleThemeClick, false);
+
+
+
+// Events handler
+
+
+onmessage = event => {
+
+  const messageType = event.data.pluginMessage.type;
+
+  switch(messageType) {
+
+    case 'render': {
+      const data = event.data.pluginMessage.data;
+      function accumulateItems(resultString, itemName) {
+        return resultString += markupListItem(itemName);
+      }
+      const itemsMarkedUp = data.reduce(accumulateItems, '');
+      domNamesList.innerHTML = itemsMarkedUp;
+
+      break;
+    }
+
+    case 'options-select-theme': {
+      optionsDeselectAll();
+      const cssId = event.data.pluginMessage.cssId;
+      const elementRadioButton = document.querySelector(`#${cssId}`);
+      if (elementRadioButton) elementRadioButton.checked = true;
+
+      break;
+    }
+
+    case 'options-disable-all': {
+      const elementsRadioButtons = document.querySelectorAll('input[type="radio"]');
+      elementsRadioButtons.forEach(elementRadioButton => {
+        elementRadioButton.checked = false;
+        elementRadioButton.disabled = true;
+      });
+
+      break;
+    }
+
+    case 'options-enable-all': {
+      const elementsRadioButtons = document.querySelectorAll('input[type="radio"]');
+      elementsRadioButtons.forEach(elementRadioButton => elementRadioButton.disabled = false);
+
+      break;
+    }
+
+    default: { break; }
+  }
+}
+
+
+</script>
