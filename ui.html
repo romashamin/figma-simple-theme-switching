@@ -26,7 +26,7 @@
     padding: var(--space-5m) 0;
   }
   .theme-option {
-    margin: 0 var(--space-4m); 
+    margin: 0 var(--space-4m);
     padding: var(--space-3m) var(--space-4m);
     list-style: none;
   }
@@ -35,105 +35,104 @@
   }
 </style>
 
-
 <!-- HTML -->
 
 <ul class="themes-list"></ul>
 
-
 <!-- JavaScript -->
 
 <script>
+  // Helpers
 
-// Helpers
-
-
-function markupListItem({ themeName, cssId }) {
-  return `<li class="theme-option">
+  function markupListItem({ themeName, cssId }) {
+    return `<li class="theme-option">
     <input type="radio" id="${cssId}" data-theme-name="${themeName}">
     <label class="theme-option-label" for="${cssId}">${themeName}</label>
   </li>`;
-}
-
-
-function optionsDeselectAll() {
-  const elementsRadioButtons = document.querySelectorAll('input[type="radio"]');
-  elementsRadioButtons.forEach(elementRadioButton => elementRadioButton.checked = false);
-}
-
-
-function handleThemeClick(event) {
-  optionsDeselectAll();
-  event.target.checked = true;
-
-  const themeName = event.target.dataset.themeName;
-  parent.postMessage({
-    pluginMessage: {
-      type: 'switch-theme-for-selected-layout',
-      themeName
-    }
-  }, '*');
-}
-
-
-
-// Main
-
-
-const domNamesList = document.querySelector('.themes-list');
-domNamesList.addEventListener('change', handleThemeClick, false);
-
-
-
-// Events handler
-
-
-onmessage = event => {
-
-  const messageType = event.data.pluginMessage.type;
-
-  switch(messageType) {
-
-    case 'render': {
-      const data = event.data.pluginMessage.data;
-      function accumulateItems(resultString, itemName) {
-        return resultString += markupListItem(itemName);
-      }
-      const itemsMarkedUp = data.reduce(accumulateItems, '');
-      domNamesList.innerHTML = itemsMarkedUp;
-
-      break;
-    }
-
-    case 'options-select-theme': {
-      optionsDeselectAll();
-      const cssId = event.data.pluginMessage.cssId;
-      const elementRadioButton = document.querySelector(`#${cssId}`);
-      if (elementRadioButton) elementRadioButton.checked = true;
-
-      break;
-    }
-
-    case 'options-disable-all': {
-      const elementsRadioButtons = document.querySelectorAll('input[type="radio"]');
-      elementsRadioButtons.forEach(elementRadioButton => {
-        elementRadioButton.checked = false;
-        elementRadioButton.disabled = true;
-      });
-
-      break;
-    }
-
-    case 'options-enable-all': {
-      const elementsRadioButtons = document.querySelectorAll('input[type="radio"]');
-      elementsRadioButtons.forEach(elementRadioButton => elementRadioButton.disabled = false);
-
-      break;
-    }
-
-    default: { break; }
   }
-}
 
+  function optionsDeselectAll() {
+    const elementsRadioButtons = document.querySelectorAll(
+      'input[type="radio"]'
+    );
+    elementsRadioButtons.forEach(
+      (elementRadioButton) => (elementRadioButton.checked = false)
+    );
+  }
 
+  function handleThemeClick(event) {
+    optionsDeselectAll();
+    event.target.checked = true;
+
+    const themeName = event.target.dataset.themeName;
+    parent.postMessage(
+      {
+        pluginMessage: {
+          type: "switch-theme-for-selected-layout",
+          themeName,
+        },
+      },
+      "*"
+    );
+  }
+
+  // Main
+
+  const domNamesList = document.querySelector(".themes-list");
+  domNamesList.addEventListener("change", handleThemeClick, false);
+
+  // Events handler
+
+  onmessage = (event) => {
+    const messageType = event.data.pluginMessage.type;
+
+    switch (messageType) {
+      case "render": {
+        const data = event.data.pluginMessage.data;
+        function accumulateItems(resultString, itemName) {
+          return (resultString += markupListItem(itemName));
+        }
+        const itemsMarkedUp = data.reduce(accumulateItems, "");
+        domNamesList.innerHTML = itemsMarkedUp;
+
+        break;
+      }
+
+      case "options-select-theme": {
+        optionsDeselectAll();
+        const cssId = event.data.pluginMessage.cssId;
+        const elementRadioButton = document.querySelector(`#${cssId}`);
+        if (elementRadioButton) elementRadioButton.checked = true;
+
+        break;
+      }
+
+      case "options-disable-all": {
+        const elementsRadioButtons = document.querySelectorAll(
+          'input[type="radio"]'
+        );
+        elementsRadioButtons.forEach((elementRadioButton) => {
+          elementRadioButton.checked = false;
+          elementRadioButton.disabled = true;
+        });
+
+        break;
+      }
+
+      case "options-enable-all": {
+        const elementsRadioButtons = document.querySelectorAll(
+          'input[type="radio"]'
+        );
+        elementsRadioButtons.forEach(
+          (elementRadioButton) => (elementRadioButton.disabled = false)
+        );
+
+        break;
+      }
+
+      default: {
+        break;
+      }
+    }
+  };
 </script>
