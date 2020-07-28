@@ -11,9 +11,7 @@ const regexThemeSlash = /theme.+?(?=\/|\s+\/)/i;
 
 function getThemeNameFromString(str) {
   const themesNames = str.match(regexThemeSlash);
-  if (!themesNames) return;
-  const [firstThemeName] = themesNames;
-  return firstThemeName;
+  return themesNames ? themesNames[0] : null;
 }
 
 function replaceThemeInName(name, targetTheme) {
