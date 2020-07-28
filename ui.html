@@ -52,12 +52,9 @@
   }
 
   function optionsDeselectAll() {
-    const elementsRadioButtons = document.querySelectorAll(
-      'input[type="radio"]'
-    );
-    elementsRadioButtons.forEach(
-      (elementRadioButton) => (elementRadioButton.checked = false)
-    );
+    document
+      .querySelectorAll('input[type="radio"]')
+      .forEach((elementRadioButton) => (elementRadioButton.checked = false));
   }
 
   function handleThemeClick(event) {
@@ -89,10 +86,11 @@
     switch (messageType) {
       case "render": {
         const data = event.data.pluginMessage.data;
-        function accumulateItems(resultString, itemName) {
-          return (resultString += markupListItem(itemName));
-        }
-        const itemsMarkedUp = data.reduce(accumulateItems, "");
+        const itemsMarkedUp = data.reduce(
+          (resultString, itemName) =>
+            (resultString += markupListItem(itemName)),
+          ""
+        );
         domNamesList.innerHTML = itemsMarkedUp;
 
         break;
@@ -101,31 +99,28 @@
       case "options-select-theme": {
         optionsDeselectAll();
         const cssId = event.data.pluginMessage.cssId;
-        const elementRadioButton = document.querySelector(`#${cssId}`);
-        if (elementRadioButton) elementRadioButton.checked = true;
+        document.querySelector(`#${cssId}`)?.checked = true;
 
         break;
       }
 
       case "options-disable-all": {
-        const elementsRadioButtons = document.querySelectorAll(
-          'input[type="radio"]'
-        );
-        elementsRadioButtons.forEach((elementRadioButton) => {
-          elementRadioButton.checked = false;
-          elementRadioButton.disabled = true;
-        });
+        document
+          .querySelectorAll('input[type="radio"]')
+          .forEach((elementRadioButton) => {
+            elementRadioButton.checked = false;
+            elementRadioButton.disabled = true;
+          });
 
         break;
       }
 
       case "options-enable-all": {
-        const elementsRadioButtons = document.querySelectorAll(
-          'input[type="radio"]'
-        );
-        elementsRadioButtons.forEach(
-          (elementRadioButton) => (elementRadioButton.disabled = false)
-        );
+        document
+          .querySelectorAll('input[type="radio"]')
+          .forEach(
+            (elementRadioButton) => (elementRadioButton.disabled = false)
+          );
 
         break;
       }

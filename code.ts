@@ -2,9 +2,7 @@
 
 function getStyleNameFromNode(node) {
   if (!node || !("fillStyleId" in node) || node.fillStyleId === "") return;
-  const styleId = node.fillStyleId;
-  const style = figma.getStyleById(styleId);
-  return style?.name;
+  return figma.getStyleById(node.fillStyleId)?.name;
 }
 
 const regexThemeSlash = /theme.+?(?=\/|\s+\/)/i;
@@ -56,9 +54,7 @@ function getCSSIdForThemeName(themeName: string): string {
 function getThemeNameFromNode(node) {
   if (!node || !("fillStyleId" in node) || node.fillStyleId === "") return null;
   const styleName = getStyleNameFromNode(node);
-  const themeName = getThemeNameFromString(styleName);
-  if (themeName) return themeName;
-  return null;
+  return getThemeNameFromString(styleName);
 }
 
 function handleSelection() {
@@ -99,9 +95,7 @@ function handleSelection() {
 // Switch theme for selection
 
 function getStyleByName(name) {
-  const styles = figma.getLocalPaintStyles();
-  const styleWithGivenName = styles.find((style) => style.name === name);
-  return styleWithGivenName;
+  return figma.getLocalPaintStyles().find((style) => style.name === name);
 }
 
 function switchThemeForNode(node, targetThemeName) {
