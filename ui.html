@@ -87,8 +87,7 @@
       case "render": {
         const data = event.data.pluginMessage.data;
         const itemsMarkedUp = data.reduce(
-          (resultString, itemName) =>
-            (resultString += markupListItem(itemName)),
+          (resultString, pair) => (resultString += markupListItem(pair)),
           ""
         );
         domNamesList.innerHTML = itemsMarkedUp;

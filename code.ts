@@ -19,17 +19,16 @@ function replaceThemeInName(name, targetTheme) {
 // Handle themes
 
 function getThemesNames() {
-  const paintStyles = figma.getLocalPaintStyles();
-  const paintStylesNames = paintStyles.map((style) => style.name);
+  const styles = figma.getLocalPaintStyles();
+  const stylesNames = styles.map((style) => style.name);
 
-  const themesNames = [];
-  paintStylesNames.forEach((styleName) => {
+  const themesNames = stylesNames.reduce((themesNames, styleName) => {
     const themeName = getThemeNameFromString(styleName);
     if (themeName) themesNames.push(themeName);
-  });
+    return themesNames;
+  }, []);
 
   const themesNamesUnique = [...new Set(themesNames)];
-
   return themesNamesUnique;
 }
 
