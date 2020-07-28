@@ -7,25 +7,18 @@ function getStyleNameFromNode(node) {
   return style?.name;
 }
 
-const themeHelper = (() => {
-  const regexThemeSlash = /theme.+?(?=\/|\s+\/)/i;
+const regexThemeSlash = /theme.+?(?=\/|\s+\/)/i;
 
-  function getThemeNameFromString(str) {
-    const themesNames = str.match(regexThemeSlash);
-    if (!themesNames) return;
-    const [firstThemeName] = themesNames;
-    return firstThemeName;
-  }
+function getThemeNameFromString(str) {
+  const themesNames = str.match(regexThemeSlash);
+  if (!themesNames) return;
+  const [firstThemeName] = themesNames;
+  return firstThemeName;
+}
 
-  function replaceThemeInName(name, targetTheme) {
-    return name.replace(regexThemeSlash, targetTheme);
-  }
-
-  return {
-    getThemeNameFromString,
-    replaceThemeInName,
-  };
-})();
+function replaceThemeInName(name, targetTheme) {
+  return name.replace(regexThemeSlash, targetTheme);
+}
 
 // Handle themes
 
@@ -35,7 +28,7 @@ function getThemesNames() {
 
   const themesNames = [];
   paintStylesNames.forEach((styleName) => {
-    const themeName = themeHelper.getThemeNameFromString(styleName);
+    const themeName = getThemeNameFromString(styleName);
     if (themeName) themesNames.push(themeName);
   });
 
@@ -65,7 +58,7 @@ function getCSSIdForThemeName(themeName: string): string {
 function getThemeNameFromNode(node) {
   if (!node || !("fillStyleId" in node) || node.fillStyleId === "") return null;
   const styleName = getStyleNameFromNode(node);
-  const themeName = themeHelper.getThemeNameFromString(styleName);
+  const themeName = getThemeNameFromString(styleName);
   if (themeName) return themeName;
   return null;
 }
@@ -115,7 +108,7 @@ function getStyleByName(name) {
 
 function switchThemeForNode(node, targetThemeName) {
   const styleName = getStyleNameFromNode(node);
-  const styleNameWithTargetTheme = themeHelper.replaceThemeInName(
+  const styleNameWithTargetTheme = replaceThemeInName(
     styleName,
     targetThemeName
   );
