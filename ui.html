@@ -98,7 +98,8 @@
       case "options-select-theme": {
         optionsDeselectAll();
         const cssId = event.data.pluginMessage.cssId;
-        document.querySelector(`#${cssId}`)?.checked = true;
+        const elementRadioButton = document.querySelector(`#${cssId}`);
+        if (elementRadioButton) elementRadioButton.checked = true;
 
         break;
       }
