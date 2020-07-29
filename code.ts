@@ -104,7 +104,7 @@ function switchThemeForNode(node, targetThemeName) {
     targetThemeName
   );
   const styleWithTargetTheme = getStyleByName(styleNameWithTargetTheme);
-  node.fillStyleId = styleWithTargetTheme?.id;
+  if (styleWithTargetTheme) node.fillStyleId = styleWithTargetTheme.id;
 }
 
 // Start point
