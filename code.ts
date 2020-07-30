@@ -56,13 +56,22 @@ function getThemeNameFromNode(node) {
   return getThemeNameFromString(styleName);
 }
 
+function getThemeName(node) {
+  if (!node) return null;
+
+  let themeName = getThemeNameFromNode(node);
+  if (themeName) return themeName;
+
+  if (!("findOne" in node)) return null;
+  themeName = getThemeNameFromNode(
+    node.findOne((node) => !!getThemeNameFromNode(node))
+  );
+  return themeName ? themeName : null;
+}
+
 function handleSelection() {
   const [firstNode] = figma.currentPage.selection;
-  if (!firstNode) {
-    figma.ui.postMessage({ type: "options-disable-all" });
-    return;
-  }
-  let themeName = getThemeNameFromNode(firstNode);
+  const themeName = getThemeName(firstNode);
   if (themeName) {
     figma.ui.postMessage({ type: "options-enable-all" });
     const cssId = getCSSIdForThemeName(themeName);
@@ -70,25 +79,9 @@ function handleSelection() {
       type: "options-select-theme",
       cssId,
     });
-    return;
-  }
-  if (!("findOne" in firstNode)) {
+  } else {
     figma.ui.postMessage({ type: "options-disable-all" });
-    return;
   }
-  themeName = getThemeNameFromNode(
-    firstNode?.findOne((node) => !!getThemeNameFromNode(node))
-  );
-  if (themeName) {
-    figma.ui.postMessage({ type: "options-enable-all" });
-    const cssId = getCSSIdForThemeName(themeName);
-    figma.ui.postMessage({
-      type: "options-select-theme",
-      cssId,
-    });
-    return;
-  }
-  figma.ui.postMessage({ type: "options-disable-all" });
 }
 
 // Switch theme for selection
