@@ -59,14 +59,15 @@ function getThemeNameFromNode(node) {
 function getThemeName(node) {
   if (!node) return null;
 
-  let themeName = getThemeNameFromNode(node);
+  const themeName = getThemeNameFromNode(node);
   if (themeName) return themeName;
 
-  if (!("findOne" in node)) return null;
-  themeName = getThemeNameFromNode(
-    node.findOne((node) => !!getThemeNameFromNode(node))
-  );
-  return themeName ? themeName : null;
+  if ("findOne" in node) {
+    return getThemeNameFromNode(
+      node.findOne((node) => !!getThemeNameFromNode(node))
+    );
+  }
+  return null;
 }
 
 function handleSelection() {
