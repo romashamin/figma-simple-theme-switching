@@ -111,25 +111,17 @@ handleSelection();
 // Events handlers
 
 figma.ui.onmessage = (msg) => {
-  switch (msg.type) {
-    case "switch-theme-for-selected-layout": {
-      const [firstNode] = figma.currentPage.selection;
-      if (!firstNode) break;
-      let nodesWithTheme = [];
-      if ("findAll" in firstNode) {
-        nodesWithTheme = firstNode.findAll(
-          (node) => !!getThemeNameFromNode(node)
-        );
-      }
-      if (getThemeNameFromNode(firstNode)) nodesWithTheme.push(firstNode);
-      nodesWithTheme.forEach((node) => switchThemeForNode(node, msg.themeName));
-
-      break;
+  if (msg.type === "switch-theme-for-selected-layout") {
+    const [firstNode] = figma.currentPage.selection;
+    if (!firstNode) return;
+    let nodesWithTheme = [];
+    if ("findAll" in firstNode) {
+      nodesWithTheme = firstNode.findAll(
+        (node) => !!getThemeNameFromNode(node)
+      );
     }
-
-    default: {
-      break;
-    }
+    if (getThemeNameFromNode(firstNode)) nodesWithTheme.push(firstNode);
+    nodesWithTheme.forEach((node) => switchThemeForNode(node, msg.themeName));
   }
 };
 
